@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج تسجيل الحدث</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue': '#1a2b56', /* أزرق غامق مستوحى من اللوجو */
+                        'brand-gold': '#fccb05', /* ذهبي مستوحى من اللوجو */
+                    },
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* الطبقة الزجاجية الأساسية */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255,255,255,1);
+        }
+
+        /* حقول الإدخال الزجاجية */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: #fccb05; /* إطار ذهبي عند التركيز */
+            box-shadow: 0 0 0 4px rgba(252, 203, 5, 0.15);
+            outline: none;
+        }
+
+        /* الأشكال المضيئة المتحركة في الخلفية (Blobs) */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            z-index: -1;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: #1a2b56; /* أزرق غامق */
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            background: #fccb05; /* ذهبي */
+            bottom: -50px;
+            left: -50px;
+            animation-delay: -5s;
+        }
+        .blob-3 {
+            width: 300px;
+            height: 300px;
+            background: #cbd5e1; /* رمادي فاتح مزرق للمزج */
+            top: 40%;
+            left: 30%;
+            animation-duration: 15s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 30px) scale(1.05); }
+            100% { transform: translate(-20px, 50px) scale(0.95); }
+        }
+
+        /* حركات التبديل بين الفورم ورسالة النجاح */
+        .fade-out {
+            animation: fadeOut 0.4s forwards ease-in;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s forwards ease-out;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.95); display: none; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .hidden-section {
+            display: none !important;
+        }
+
+        /* علامة الصح المتحركة */
+        .check-icon-wrapper {
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+            transform: scale(0);
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0) rotate(-45deg); }
+            to { opacity: 1; transform: scale(1) rotate(0); }
+        }
+    </style>
+</head>
+<body class="relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+
+    <!-- الخلفية المضيئة -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="relative w-full max-w-lg z-10">
+        
+        <!-- الحاوية الزجاجية -->
+        <div class="glass-panel rounded-3xl overflow-hidden relative">
+            
+            <!-- حاوية اللوجو العلوية (خلفية داكنة لتناسب صورة اللوجو ذات الخلفية السوداء) -->
+            <div class="bg-[#0a0a0a] p-6 flex flex-col items-center justify-center border-b border-white/20">
+                <img src="image_1bf922.png" alt="الشعار" class="h-16 w-auto object-contain drop-shadow-lg">
+                <p class="text-brand-gold text-sm mt-3 font-semibold tracking-wider text-center">تسجيل حضور الفعالية</p>
+            </div>
+
+            <div class="p-8 sm:p-10">
+                
+                <!-- قسم الفورم -->
+                <div id="form-section">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-slate-800">أهلاً بك معنا!</h2>
+                        <p class="text-slate-500 mt-2 text-sm">يرجى تعبئة البيانات أدناه لتأكيد حضورك للحدث.</p>
+                    </div>
+
+                    <form id="registration-form" class="space-y-5">
+                        
+                        <!-- الاسم الكامل -->
+                        <div>
+                            <label class="block text-sm font-semibold text-brand-blue mb-1.5 ml-1">الاسم الكامل <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fa-regular fa-user text-slate-400"></i>
+                                </div>
+                                <input type="text" required class="glass-input w-full pl-4 pr-11 py-3.5 rounded-xl text-slate-800 placeholder-slate-400" placeholder="اكتب اسمك الثنائي أو الثلاثي">
+                            </div>
+                        </div>
+
+                        <!-- رقم الهاتف -->
+                        <div>
+                            <label class="block text-sm font-semibold text-brand-blue mb-1.5 ml-1">رقم الهاتف <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fa-solid fa-mobile-screen-button text-slate-400"></i>
+                                </div>
+                                <input type="tel" required dir="ltr" class="glass-input w-full pl-4 pr-11 py-3.5 rounded-xl text-left text-slate-800 placeholder-slate-400" placeholder="+20 123 456 7890">
+                            </div>
+                        </div>
+
+                        <!-- البريد الإلكتروني -->
+                        <div>
+                            <label class="block text-sm font-semibold text-brand-blue mb-1.5 ml-1">البريد الإلكتروني</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fa-regular fa-envelope text-slate-400"></i>
+                                </div>
+                                <input type="email" dir="ltr" class="glass-input w-full pl-4 pr-11 py-3.5 rounded-xl text-left text-slate-800 placeholder-slate-400" placeholder="example@company.com">
+                            </div>
+                        </div>
+
+                        <!-- الشركة / المسمى الوظيفي -->
+                        <div>
+                            <label class="block text-sm font-semibold text-brand-blue mb-1.5 ml-1">جهة العمل / الوظيفة</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                                    <i class="fa-regular fa-building text-slate-400"></i>
+                                </div>
+                                <input type="text" class="glass-input w-full pl-4 pr-11 py-3.5 rounded-xl text-slate-800 placeholder-slate-400" placeholder="اسم الشركة أو مسماك الوظيفي">
+                            </div>
+                        </div>
+
+                        <!-- زر الإرسال -->
+                        <div class="pt-4">
+                            <button type="submit" id="submit-btn" class="w-full relative overflow-hidden bg-brand-blue hover:bg-[#111c38] text-white font-bold py-4 rounded-xl shadow-[0_10px_20px_-10px_rgba(26,43,86,0.5)] transition-all duration-300 transform hover:-translate-y-1 group">
+                                <span class="relative z-10 flex items-center justify-center gap-2">
+                                    تأكيد التسجيل
+                                    <i class="fa-solid fa-arrow-left text-sm group-hover:-translate-x-1 transition-transform"></i>
+                                </span>
+                                <!-- تأثير لمعة على الزر -->
+                                <div class="absolute inset-0 h-full w-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- قسم رسالة النجاح (مخفي افتراضياً) -->
+                <div id="success-section" class="hidden-section flex flex-col items-center justify-center py-6 text-center">
+                    
+                    <div class="check-icon-wrapper mb-6">
+                        <!-- دائرة ذهبية بداخلها علامة صح زرقاء -->
+                        <div class="w-24 h-24 bg-brand-gold rounded-full flex items-center justify-center shadow-lg shadow-brand-gold/40 border-4 border-white/50">
+                            <i class="fa-solid fa-check text-4xl text-brand-blue"></i>
+                        </div>
+                    </div>
+                    
+                    <h2 class="text-3xl font-extrabold text-brand-blue mb-3">شكراً لك!</h2>
+                    <p class="text-lg text-slate-700 font-semibold mb-2">تم تسجيل البيانات بنجاح</p>
+                    <p class="text-slate-500 text-sm mb-8">نتطلع لرؤيتك في الحدث. تم حفظ مقعدك معنا.</p>
+                    
+                    <button type="button" id="back-btn" class="text-brand-blue hover:text-brand-gold font-bold py-2 px-6 rounded-lg transition-colors flex items-center gap-2 border-2 border-transparent hover:border-brand-gold/30">
+                        <i class="fa-solid fa-plus"></i> تسجيل شخص آخر
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="text-center mt-6 text-slate-500 text-sm font-medium">
+            <p>&copy; 2026 جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('registration-form');
+            const formSection = document.getElementById('form-section');
+            const successSection = document.getElementById('success-section');
+            const backBtn = document.getElementById('back-btn');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // إضافة تأثير اللمعة (Shimmer) في Tailwind
+            tailwind.config.theme.extend.keyframes = {
+                ...tailwind.config.theme.extend.keyframes,
+                shimmer: {
+                    '100%': { transform: 'translateX(100%)' }
+                }
+            };
+
+            // معالجة إرسال الفورم
+            form.addEventListener('submit', (e) => {
+                e.preventDefault(); // منع تحديث الصفحة الافتراضي
+
+                // تغيير حالة الزر ليعطي إيحاء بالتحميل (UX أفضل)
+                const originalBtnContent = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> جاري التسجيل...';
+                submitBtn.disabled = true;
+
+                // محاكاة إرسال البيانات للسيرفر (تأخير بسيط لمدة ثانية)
+                setTimeout(() => {
+                    // إخفاء الفورم بحركة بطيئة
+                    formSection.classList.add('fade-out');
+                    
+                    setTimeout(() => {
+                        formSection.classList.add('hidden-section');
+                        formSection.classList.remove('fade-out');
+                        
+                        // إظهار رسالة النجاح
+                        successSection.classList.remove('hidden-section');
+                        successSection.classList.add('fade-in');
+                        
+                        // إعادة الزر لحالته الأصلية لاستخدامه لاحقاً
+                        submitBtn.innerHTML = originalBtnContent;
+                        submitBtn.disabled = false;
+                        
+                    }, 400); // يتوافق مع وقت الـ animation
+                    
+                }, 1000);
+            });
+
+            // معالجة زر العودة (تسجيل شخص آخر)
+            backBtn.addEventListener('click', () => {
+                // إخفاء رسالة النجاح
+                successSection.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    successSection.classList.add('hidden-section');
+                    successSection.classList.remove('fade-out', 'fade-in');
+                    
+                    // إعادة تعيين الفورم (تفريغ الحقول)
+                    form.reset();
+                    
+                    // إظهار الفورم
+                    formSection.classList.remove('hidden-section');
+                    formSection.classList.add('fade-in');
+                    
+                    setTimeout(() => {
+                        formSection.classList.remove('fade-in');
+                    }, 500);
+
+                }, 400);
+            });
+        });
+    </script>
+</body>
+</html>
